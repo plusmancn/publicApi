@@ -84,7 +84,7 @@ cHVibGljQXBp5piv5Liq5YWN6LS555qE5byA5rqQ5Z+656GA5pyN5Yqh5bmz5Y+w
 
 **站点配置文件**
 	
-	#file：
+	#file：api.plusman.cn.conf 
 	
 	server
     {
