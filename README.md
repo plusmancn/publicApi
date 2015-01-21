@@ -1,103 +1,130 @@
-# HyxServer
-> The node.js Server of Hyx App by Hw.Tech.Ltd
+# publicApi 
+> saas化的基础服务平台，由 [ThinkPhp](http://thinkphp.cn) 强力驱动，在合法的范围内，随意使用
 
-**云函数列表**
+**接口目录**
 
-* registerUser （用户注册）
-* getTwowayFriends （获取双向好友） 
-* getToconfirmFriends （获取好友请求）
-
-
-**页面列表**
-
-* 会议发布页面
-* 会议展示页面
-* 发送推送消息
-* 用户资料编辑 
-
-
-**常用功能函数**
-
-> 请移步  [publicApi](https://github.com/plusmancn/publicApi)，由 ThinkPhp 强力驱动的开放saas化的基础服务平台
-
-**Bug血泪史**
-
-* 关于local，develop，production 三个生产环境的故事
+* 二维码生成 (QrCode Generator)
 
 ****
 
-[TOC]
+**附录**
 
-
-****
-
-## 页面列表
-### 会议发布页面
-**接口地址**    
-http://dev.juyx.avosapps.com/MeetingEdit?meetingId=%@&userId=%@
-
-**请求方式**  
-`Get`
-
-**参数定义**
-
-| 参数		| 解释		
-|:----------|:-----------
-| meetingId | 为0时候，则为新建会议，相应会议objectId时候则为编辑会议|
-| userId	| 创建者用户ID，meetingId为0时候，必须带上
-
-****
-###  会议展示页面 
-**接口地址**
-http://dev.juyx.avosapps.com/MeetingShow?meetingId=%@
-
-**请求方式**
-`Get`
-
-**参数定义**
-
-| 参数      |     解释 
-| :-------- | :--------
-| meetingId   |  会议objectId 
-
-****
-###  发送推送消息
-**接口地址**
-http://dev.juyx.avosapps.com/MessagePush?meetingId=%@
-
-**请求方式**
-`Get`
-
-**参数定义**
-
-| 参数      |     解释 
-| :-------- | :--------
-| meetingId   |  会议objectId 
-
-****
-###  用户资料编辑
-**接口地址**
-http://dev.juyx.avosapps.com/UserEdit?userId=%@
-
-**请求方式**
-`Get`
-
-**参数定义**
-
-| 参数      |     解释 
-| :-------- | :--------
-| userId    |  用户objectId 
+* Nginx下ThinkPhp配置文件参考
 
 ****
 
-## Bug血泪史
-### 关于local，develop，production 三个生产环境的故事
-工单
-[{ code: 142, message: 'Cloud Code validation failed. Error detail : Class or object doesn\'t exists.' }](https://ticket.avosapps.com/tickets/54bd0f47e4b0b26e92db53f0/threads)
+###二维码生成 (QrCode Generator)
+**接口地址：**  
+[http://api.plusman.cn/QrCode/{$SingleBase64Data}.png](http://api.plusman.cn/QrCode/aHR0cDovL3d3dy5iYWlkdS5jb20v5YiY5L2z5qWg.png)    
 
-对于新手来说，leancloud的这三个环境确实是个坑，三个环境的代码，除了local是对用户透明的外，其他两个环境得靠自己记忆了。所以有时候，看本地代码，实在看不出bug在哪里的时候，可以尝试进行如下操作
+**请求方式：**  `Get`
+
+**参数定义**    
+
+参数					|解释			
+:------------------|:-------------  
+SingleBase64Data	| 原始数据单层base64加密
+
+**示例**  
+二维码要存储的数据为：
+publicApi是个免费的开源基础服务平台  
+
+通过单层base64加密后为：
+cHVibGljQXBp5piv5Liq5YWN6LS555qE5byA5rqQ5Z+656GA5pyN5Yqh5bmz5Y+w  
+
+最后请求url为：
+[http://api.plusman.cn/QrCode/cHVibGljQXBp5piv5Liq5YWN6LS555qE5byA5rqQ5Z+656GA5pyN5Yqh5bmz5Y+w.png](http://api.plusman.cn/QrCode/cHVibGljQXBp5piv5Liq5YWN6LS555qE5byA5rqQ5Z+656GA5pyN5Yqh5bmz5Y+w.png)  
+
+![image](http://api.plusman.cn/QrCode/cHVibGljQXBp5piv5Liq5YWN6LS555qE5byA5rqQ5Z+656GA5pyN5Yqh5bmz5Y+w.png)
+
+****
+### Nginx下ThinkPhp配置文件参考
+**支持Pathinfo**
+
+	# file：pathinfo.conf
 	
-	avoscloud deploy
-	avoscloud publish
+	set $script     $uri;
+	set $path_info  "";
+	if ($uri ~ "^(.+?\.php)(/.+)$") {
+	    set $script     $1;
+	    set $path_info  $2;
+	}
+	fastcgi_param  SCRIPT_FILENAME    $document_root$script;
+	fastcgi_param  SCRIPT_NAME        $script;
+	fastcgi_param  PATH_INFO          $path_info;
+
+**支持FastCgi**
 	
-还是那种感觉，调bug，尽量避免黑盒。
+	#file：fastcgi.conf
+	
+	fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+	fastcgi_param  QUERY_STRING       $query_string;
+	fastcgi_param  REQUEST_METHOD     $request_method;
+	fastcgi_param  CONTENT_TYPE       $content_type;
+	fastcgi_param  CONTENT_LENGTH     $content_length;
+	
+	fastcgi_param  SCRIPT_NAME        $fastcgi_script_name;
+	fastcgi_param  REQUEST_URI        $request_uri;
+	fastcgi_param  DOCUMENT_URI       $document_uri;
+	fastcgi_param  DOCUMENT_ROOT      $document_root;
+	fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+	fastcgi_param  HTTPS              $https if_not_empty;
+	
+	fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+	fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+	
+	fastcgi_param  REMOTE_ADDR        $remote_addr;
+	fastcgi_param  REMOTE_PORT        $remote_port;
+	fastcgi_param  SERVER_ADDR        $server_addr;
+	fastcgi_param  SERVER_PORT        $server_port;
+	fastcgi_param  SERVER_NAME        $server_name;
+	
+	# PHP only, required if PHP was built with --enable-force-cgi-redirect
+	fastcgi_param  REDIRECT_STATUS    200;
+
+**站点配置文件**
+	
+	#file：
+	
+	server
+    {
+            listen 80;
+            #listen [::]:80;
+            server_name api.plusman.cn;
+            index index.html index.htm index.php default.html default.htm default.php;
+            root  /home/wwwroot/api.plusman.cn;
+
+            include other.conf;
+            #error_page   404   /404.html;
+
+            location / {
+                    if (!-e $request_filename){
+                            rewrite ^(.*)$  /index.php?s=$1  last;
+                            break;
+                    }
+            }
+
+            location ~ [^/]\.php(/|$)
+                    {
+                            # comment try_files $uri =404; to enable pathinfo
+                            try_files $uri =404;
+                            fastcgi_pass  unix:/tmp/php-cgi.sock;
+                            fastcgi_index index.php;
+                            include fastcgi.conf; # 此处包含上述文件
+                            include pathinfo.conf; # 此处包含上诉文件
+                    }
+
+			# Png 此处默认缺省，如果非api服务的话，需要再做相应配置，Todo，需要更新
+            location ~ .*\.(gif|jpg|jpeg|bmp|swf)$   
+                    {
+                            expires      30d;
+                    }
+
+            location ~ .*\.(js|css)?$
+                    {
+                            expires      12h;
+                    }
+
+            access_log  /home/wwwlogs/api.plusman.cn.log  access;
+    }
+	
