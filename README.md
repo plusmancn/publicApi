@@ -89,7 +89,7 @@ SingleBase64Data	| 原始数据单层base64加密
 
 * 实现资源文件，/ueditor.config.js，/ueditor/ueditor.all.js 从publicApi处加载，现在需要从本地加载。
 * 插入表情功能，整体浏览网格为空。
-* 把文件存储移植到阿里云（暂时没有找到现成的，七牛的有 [https://github.com/widuu/utf8_qiniu_ueditor]([http://fex-team.github.io/ueditor](http://fex-team.github.io/ueditor)）
+* 把文件存储移植到阿里云（暂时没有找到现成的，七牛的有 [https://github.com/widuu/utf8_qiniu_ueditor](http://fex-team.github.io/ueditor)）
 
 ****
 
